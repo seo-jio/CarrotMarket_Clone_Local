@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="5fdf2354-0af4-44b2-a429-44659ce63175" name="carrot_market" url="http://www.seojio-server.shop/">
+        <fileTransfer rootFolder="/var/www/SpringBootTemplate" accessType="SFTP" host="52.78.112.236" port="22" sshConfigId="69edecca-180e-41be-ae2a-7f9281e457e9" sshConfig="ubuntu@52.78.112.236:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
