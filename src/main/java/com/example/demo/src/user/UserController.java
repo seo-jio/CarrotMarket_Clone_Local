@@ -144,6 +144,7 @@ public class UserController {
         //  .(dot)이 포함된 경우, .을 포함한 그 뒤가 잘려서 들어감
         // Get Users
         try {
+            System.out.println("백에서 돌아가유~~~");
             GetUserRes getUserRes = userProvider.getUser(userIdx);
             return new BaseResponse<>(getUserRes);
         } catch (BaseException exception) {
@@ -179,5 +180,17 @@ public class UserController {
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
+    }
+
+    @ResponseBody
+    @GetMapping("/user-address/{userIdx}")
+    public BaseResponse<List<GetUserAddressRes>> getUserAddressByUserIdx(@PathVariable int userIdx){
+        try{
+            List<GetUserAddressRes> getUserAddressRes = userProvider.getUserAddress(userIdx);
+            return new BaseResponse<>(getUserAddressRes);
+        }catch(BaseException baseException){
+            return new BaseResponse<>(baseException.getStatus());
+        }
+
     }
 }

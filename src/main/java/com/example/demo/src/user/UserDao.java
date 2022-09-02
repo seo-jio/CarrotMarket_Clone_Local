@@ -137,4 +137,20 @@ public class UserDao {
                         rs.getString("password")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
                 getUserParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
+
+    public List<GetUserAddressRes> getUserAddress(int userIdx) {
+        String getUserAddressQuery = "select a.addressIdx, a.roadNameAddress, ua.isAuth, ua.isMain, ua.isNotified\n" +
+                "from UserAddress ua\n" +
+                "join Address a on ua.addressIdx = a.addressIdx\n" +
+                "where ua.userIdx = ?";
+        int getUserAddressParam = userIdx;
+        return jdbcTemplate.query(getUserAddressQuery,
+                (rs, rowNum) -> new GetUserAddressRes(
+                        rs.getInt("addressIdx"),
+                        rs.getString("roadNameAddress"),
+                        rs.getString("isAuth"),
+                        rs.getString("isMain"),
+                        rs.getString("isNotified")),
+                    getUserAddressParam);
+    }
 }

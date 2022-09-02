@@ -21,7 +21,7 @@ public class ProductDao {
     }
 
     public List<GetProductRes> getProducts() {
-        String getProductsQuery = "select * from Product";
+        String getProductsQuery = "select * from Product where status = 'Y'";
         return this.jdbcTemplate.query(getProductsQuery,
                 (rs, rowNum) -> new GetProductRes(
                         rs.getInt("productIdx"),
@@ -35,7 +35,7 @@ public class ProductDao {
     }
 
     public List<GetProductRes> getProductsByLocation(int location) {
-        String getProductsQuery = "select * from Product where location = ?";
+        String getProductsQuery = "select * from Product where location = ? and status = 'Y'";
         int getProductsByLocationParams = location;
         return this.jdbcTemplate.query(getProductsQuery,
                 (rs, rowNum) -> new GetProductRes(
@@ -50,7 +50,7 @@ public class ProductDao {
     }
 
     public List<GetProductRes> getProductsBySellerIdx(int sellerIdx) {
-        String getProductsQuery = "select * from Product where sellerIdx = ?";
+        String getProductsQuery = "select * from Product where sellerIdx = ? and status = 'Y'";
         int getProductsBySellerIdxParams = sellerIdx;
         return this.jdbcTemplate.query(getProductsQuery,
                 (rs, rowNum) -> new GetProductRes(
