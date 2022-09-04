@@ -32,10 +32,21 @@ public class ProductController {
     }
 
     @ResponseBody
-    @PatchMapping("/change-status")
+    @PatchMapping("/delete-product")
     public BaseResponse<PatchChangeStatusRes> deleteProduct(@RequestBody PatchChangeStatusReq patchChangeStatusReq){
         try{
-            PatchChangeStatusRes patchChangeStatusRes = productService.updateStatus(patchChangeStatusReq);
+            PatchChangeStatusRes patchChangeStatusRes = productService.updateStatusN(patchChangeStatusReq);
+            return new BaseResponse<>(patchChangeStatusRes);
+        }catch(BaseException baseException){
+            return new BaseResponse<>(baseException.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @PatchMapping("/sold-product")
+    public BaseResponse<PatchChangeStatusRes> soldProduct(@RequestBody PatchChangeStatusReq patchChangeStatusReq){
+        try{
+            PatchChangeStatusRes patchChangeStatusRes = productService.updateStatusS(patchChangeStatusReq);
             return new BaseResponse<>(patchChangeStatusRes);
         }catch(BaseException baseException){
             return new BaseResponse<>(baseException.getStatus());
@@ -77,6 +88,21 @@ public class ProductController {
                 return new BaseResponse<>(getProductRes);
             }
             List<GetProductRes> getProductRes = productProvider.getProductsByLocation(location); //auto unboxing -> .intValue() 불필요
+            return new BaseResponse<>(getProductRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/by-categoryIdx")
+    public BaseResponse<List<GetProductRes>> getProductsByCategory(@RequestParam(required = false) Integer categoryIdx){
+        try{
+            if(categoryIdx == null){
+                List<GetProductRes> getProductRes = productProvider.getProducts();
+                return new BaseResponse<>(getProductRes);
+            }
+            List<GetProductRes> getProductRes = productProvider.getProductsByCategoryIdx(categoryIdx); //auto unboxing -> .intValue() 불필요
             return new BaseResponse<>(getProductRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());

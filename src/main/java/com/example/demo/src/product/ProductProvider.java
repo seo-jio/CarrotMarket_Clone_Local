@@ -3,6 +3,7 @@ package com.example.demo.src.product;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.product.model.GetProductRes;
 import com.example.demo.src.user.model.GetUserRes;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,15 @@ public class ProductProvider {
     public List<GetProductRes> getProductsByLocation(int location) throws BaseException {
         try{
             List<GetProductRes> getProductRes = productDao.getProductsByLocation(location);
+            return getProductRes;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetProductRes> getProductsByCategoryIdx(Integer categoryIdx) throws BaseException {
+        try{
+            List<GetProductRes> getProductRes = productDao.getProductsByCategoryIdx(categoryIdx);
             return getProductRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);

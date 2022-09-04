@@ -2,6 +2,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
+import com.example.demo.src.product.model.GetProductRes;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
@@ -108,6 +109,15 @@ public class UserProvider {
         try{
             List<GetUserAddressRes> getUserAddressRes = userDao.getUserAddress(userIdx);
             return getUserAddressRes;
+        }catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetBuyProduct> getProductByUserDeal(int userIdx) throws BaseException{
+        try{
+            List<GetBuyProduct> getBuyProducts = userDao.getProductByUserDeal(userIdx);
+            return getBuyProducts;
         }catch(Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

@@ -10,6 +10,7 @@ public class GetProductRes {
     private int productIdx;
     private int sellerIdx;
     private int location;
+    private int categoryIdx;
     private String title;
     private String content;
     private int price;

@@ -27,6 +27,7 @@ public class ProductDao {
                         rs.getInt("productIdx"),
                         rs.getInt("sellerIdx"),
                         rs.getInt("location"),
+                        rs.getInt("categoryIdx"),
                         rs.getString("title"),
                         rs.getString("content"),
                         rs.getInt("price"),
@@ -42,6 +43,7 @@ public class ProductDao {
                         rs.getInt("productIdx"),
                         rs.getInt("sellerIdx"),
                         rs.getInt("location"),
+                        rs.getInt("categoryIdx"),
                         rs.getString("title"),
                         rs.getString("content"),
                         rs.getInt("price"),
@@ -57,11 +59,28 @@ public class ProductDao {
                         rs.getInt("productIdx"),
                         rs.getInt("sellerIdx"),
                         rs.getInt("location"),
+                        rs.getInt("categoryIdx"),
                         rs.getString("title"),
                         rs.getString("content"),
                         rs.getInt("price"),
                         rs.getString("canSuggestPrice")),
                 getProductsBySellerIdxParams);
+    }
+
+    public List<GetProductRes> getProductsByCategoryIdx(Integer categoryIdx) {
+        String getProductsQuery = "select * from Product where categoryIdx = ? and status = 'Y'";
+        int getProductsByCategoryIdxParams = categoryIdx;
+        return this.jdbcTemplate.query(getProductsQuery,
+                (rs, rowNum) -> new GetProductRes(
+                        rs.getInt("productIdx"),
+                        rs.getInt("sellerIdx"),
+                        rs.getInt("location"),
+                        rs.getInt("categoryIdx"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getInt("price"),
+                        rs.getString("canSuggestPrice")),
+                getProductsByCategoryIdxParams);
     }
 
     public int createProduct(PostProductReq postProductReq) {
@@ -75,8 +94,18 @@ public class ProductDao {
         return jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
-    public int updateStatus(PatchChangeStatusReq patchChangeStatusReq) {
+    public int updateStatusN(PatchChangeStatusReq patchChangeStatusReq) {
         String updateStatusQuery = "update Product p set p.status = 'N' where p.productIdx = ?";
+        int updateStatusQueryParams = patchChangeStatusReq.getProductIdx();
+        jdbcTemplate.update(updateStatusQuery, updateStatusQueryParams);
+        //updatedAt 컬럼 값을 확인하여 가장 최근에 수정한 row의 id를 가져온다.
+        String lastUpdateIdQuery = "select productIdx from Product order by updatedAt desc limit 1";
+        int result =  jdbcTemplate.queryForObject(lastUpdateIdQuery, int.class);
+        return result;
+    }
+
+    public int updateStatusS(PatchChangeStatusReq patchChangeStatusReq) {
+        String updateStatusQuery = "update Product p set p.status = 'S' where p.productIdx = ?";
         int updateStatusQueryParams = patchChangeStatusReq.getProductIdx();
         jdbcTemplate.update(updateStatusQuery, updateStatusQueryParams);
         //updatedAt 컬럼 값을 확인하여 가장 최근에 수정한 row의 id를 가져온다.

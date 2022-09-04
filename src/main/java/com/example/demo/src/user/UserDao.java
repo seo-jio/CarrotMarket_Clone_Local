@@ -1,6 +1,7 @@
 package com.example.demo.src.user;
 
 
+import com.example.demo.src.product.model.GetProductRes;
 import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -152,5 +153,25 @@ public class UserDao {
                         rs.getString("isMain"),
                         rs.getString("isNotified")),
                     getUserAddressParam);
+    }
+
+    public List<GetBuyProduct> getProductByUserDeal(int userIdx) {
+        String getProductByUserDealQuery = "select udp.userIdx as buyerIdx, udp.nickname as buyerNickname, u.userIdx as sellerIdx, u.nickname as sellerNickname, udp.dealIdx, udp.dealPrice, udp.productIdx, udp.title\n" +
+                "from (select ud.userIdx, ud.nickname, ud.dealIdx, ud.dealPrice, p.productIdx, p.title, p.sellerIdx\n" +
+                "        from (select d.dealIdx, d.productIdx, d.dealPrice, u.userIdx, u.nickname from Deal d join User u on d.buyerIdx = u.userIdx where u.userIdx = ?) ud\n" +
+                "            join Product p on ud.productIdx = p.productIdx) udp\n" +
+                "                join User u on udp.sellerIdx = u.userIdx";
+        int getProductByUserDealParams = userIdx;
+        return this.jdbcTemplate.query(getProductByUserDealQuery,
+                (rs, rowNum) -> new GetBuyProduct(
+                        rs.getInt("buyerIdx"),
+                        rs.getString("buyerNickname"),
+                        rs.getInt("sellerIdx"),
+                        rs.getString("sellerNickname"),
+                        rs.getInt("dealIdx"),
+                        rs.getInt("dealPrice"),
+                        rs.getInt("productIdx"),
+                        rs.getString("title")),
+                getProductByUserDealParams);
     }
 }

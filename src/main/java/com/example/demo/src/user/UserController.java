@@ -1,5 +1,6 @@
 package com.example.demo.src.user;
 
+import com.example.demo.src.product.model.GetProductRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
@@ -191,6 +192,16 @@ public class UserController {
         }catch(BaseException baseException){
             return new BaseResponse<>(baseException.getStatus());
         }
+    }
 
+    @ResponseBody
+    @GetMapping("/buy/{userIdx}")
+    public BaseResponse<List<GetBuyProduct>> getProductByUserDeal(@PathVariable int userIdx){
+        try{
+            List<GetBuyProduct> getBuyProducts = userProvider.getProductByUserDeal(userIdx);
+            return new BaseResponse<>(getBuyProducts);
+        }catch(BaseException baseException){
+            return new BaseResponse<>(baseException.getStatus());
+        }
     }
 }

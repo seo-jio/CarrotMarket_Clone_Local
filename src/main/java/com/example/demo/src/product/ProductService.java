@@ -1,7 +1,6 @@
 package com.example.demo.src.product;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.product.model.PatchChangeStatusReq;
 import com.example.demo.src.product.model.PatchChangeStatusRes;
 import com.example.demo.src.product.model.PostProductReq;
@@ -29,9 +28,18 @@ public class ProductService {
         }
     }
 
-    public PatchChangeStatusRes updateStatus(PatchChangeStatusReq patchChangeStatusReq) throws BaseException{
+    public PatchChangeStatusRes updateStatusN(PatchChangeStatusReq patchChangeStatusReq) throws BaseException{
         try{
-            int productIdx = productDao.updateStatus(patchChangeStatusReq);
+            int productIdx = productDao.updateStatusN(patchChangeStatusReq);
+            return new PatchChangeStatusRes(productIdx);
+        }catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PatchChangeStatusRes updateStatusS(PatchChangeStatusReq patchChangeStatusReq) throws BaseException{
+        try{
+            int productIdx = productDao.updateStatusS(patchChangeStatusReq);
             return new PatchChangeStatusRes(productIdx);
         }catch(Exception exception){
             throw new BaseException(DATABASE_ERROR);
