@@ -30,7 +30,7 @@ public class JwtService {
                 .setHeaderParam("type","jwt")
                 .claim("userIdx",userIdx)
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
+                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365))) //만료기간을 1년으로 설정
                 .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
                 .compact();
     }
@@ -51,7 +51,7 @@ public class JwtService {
      */
     public int getUserIdx() throws BaseException{
         //1. JWT 추출
-        String accessToken = getJwt();
+        String accessToken = getJwt();  //Request에서 jwt 토큰 추출
         if(accessToken == null || accessToken.length() == 0){
             throw new BaseException(EMPTY_JWT);
         }
@@ -59,9 +59,9 @@ public class JwtService {
         // 2. JWT parsing
         Jws<Claims> claims;
         try{
-            claims = Jwts.parser()
-                    .setSigningKey(Secret.JWT_SECRET_KEY)
-                    .parseClaimsJws(accessToken);
+            claims = Jwts.parser()  //추출한 토큰 parsing
+                    .setSigningKey(Secret.JWT_SECRET_KEY)  //decoding을 위해 secrete key 입력
+                    .parseClaimsJws(accessToken);  //jwt 토큰 삽입
         } catch (Exception ignored) {
             throw new BaseException(INVALID_JWT);
         }

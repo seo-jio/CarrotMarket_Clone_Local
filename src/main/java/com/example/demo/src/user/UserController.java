@@ -71,6 +71,12 @@ public class UserController {
         if (!isRegexEmail(postUserReq.getEmail())) {
             return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
         }
+        if (postUserReq.getPassword() == null){  //비밀번호 입력 란이 공백일 경우 validation
+            return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD);
+        }
+        if (postUserReq.getNickname() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_NICKNAME);
+        }
         try {
             PostUserRes postUserRes = userService.createUser(postUserReq);
             return new BaseResponse<>(postUserRes);
@@ -86,9 +92,27 @@ public class UserController {
     @ResponseBody
     @PostMapping("/log-in")
     public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq) {
+        // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
+        // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
+        if (postLoginReq.getEmail() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
+        }
+        //이메일 정규표현: 입력받은 이메일이 email@domain.xxx와 같은 형식인지 검사합니다. 형식이 올바르지 않다면 에러 메시지를 보냅니다.
+        if (!isRegexEmail(postLoginReq.getEmail())) {
+            return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
+        }
+        if (postLoginReq.getPassword() == null){  //비밀번호 입력 란이 공백일 경우 validation
+            return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD);
+        }
         try {
-            // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
-            // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
+            int userIdxFindByJwt = jwtService.getUserIdx();
+            GetUserRes getUserRes = userProvider.getUser(userIdxFindByJwt);
+            if (getUserRes.getStatus() == "N"){
+                return new BaseResponse<>(POST_USERS_DELETED_USER);
+            }
+            else if (getUserRes.getStatus() == "H"){
+                return new BaseResponse<>(POST_USERS_SLEEPER_ACCOUNT);
+            }
             PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
             return new BaseResponse<>(postLoginRes);
         } catch (BaseException exception) {
@@ -193,9 +217,39 @@ public class UserController {
     }
 
     @ResponseBody
+    @GetMapping("/validation/user-address/{userIdx}")
+    public BaseResponse<List<GetUserAddressRes>> getUserAddressWithValidationByUserIdx(@PathVariable int userIdx){
+        try{
+            int userIdxFindByJwt = jwtService.getUserIdx();
+            if(userIdxFindByJwt != userIdx){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            List<GetUserAddressRes> getUserAddressRes = userProvider.getUserAddress(userIdx);
+            return new BaseResponse<>(getUserAddressRes);
+        }catch (BaseException baseException){
+            return new BaseResponse<>(baseException.getStatus());
+        }
+    }
+
+    @ResponseBody
     @GetMapping("/buy/{userIdx}")
     public BaseResponse<List<GetBuyProduct>> getProductByUserDeal(@PathVariable int userIdx){
         try{
+            List<GetBuyProduct> getBuyProducts = userProvider.getProductByUserDeal(userIdx);
+            return new BaseResponse<>(getBuyProducts);
+        }catch(BaseException baseException){
+            return new BaseResponse<>(baseException.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/validation/buy/{userIdx}")
+    public BaseResponse<List<GetBuyProduct>> getProductWithValidationByUserDeal(@PathVariable int userIdx){
+        try{
+            int userIdxFindByJwt = jwtService.getUserIdx();
+            if(userIdxFindByJwt != userIdx){
+                return new BaseResponse<>(INVALID_JWT);
+            }
             List<GetBuyProduct> getBuyProducts = userProvider.getProductByUserDeal(userIdx);
             return new BaseResponse<>(getBuyProducts);
         }catch(BaseException baseException){
