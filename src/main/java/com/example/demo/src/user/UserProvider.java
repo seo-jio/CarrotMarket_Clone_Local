@@ -56,7 +56,8 @@ public class UserProvider {
             int userIdx = userDao.getPwd(postLoginReq).getUserIdx();
 //            return new PostLoginRes(userIdx);
 //  *********** 해당 부분은 7주차 - JWT 수업 후 주석해제 및 대체해주세요!  **************** //
-            String jwt = jwtService.getJwt();  //로그인 시 회원 가입 때 발급받은 JWT를 사용하도록 변경
+//            String jwt = jwtService.getJwt();  //로그인 시 회원 가입 때 발급받은 JWT를 사용하도록 변경
+            String jwt = jwtService.createJwt(userIdx);
             return new PostLoginRes(userIdx, jwt);
 //  **************************************************************************
 
