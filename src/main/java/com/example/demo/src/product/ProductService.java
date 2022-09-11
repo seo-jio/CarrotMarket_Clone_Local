@@ -24,6 +24,7 @@ public class ProductService {
             int productIdx = productDao.createProduct(postProductReq);
             return new PostProductRes(productIdx);
         }catch(Exception exception){
+            System.out.println(exception.getMessage());
             throw new BaseException(DATABASE_ERROR);
         }
     }

@@ -56,4 +56,13 @@ public class ProductProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public List<GetProductRes> getProductsByUserIdx(int userIdx) throws BaseException{
+        try{
+            List<GetProductRes> getProductRes = productDao.getProductsByUserIdx(userIdx);
+            return getProductRes;
+        }catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

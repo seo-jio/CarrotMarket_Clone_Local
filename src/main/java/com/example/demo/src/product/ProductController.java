@@ -2,7 +2,9 @@ package com.example.demo.src.product;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.product.model.*;
+import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +22,16 @@ public class ProductController {
 
     private final ProductService productService;
 
+    private final JwtService jwtService;
+
     @ResponseBody
     @PostMapping("")
     public BaseResponse<PostProductRes> createProduct(@RequestBody PostProductReq postProductReq){
         try{
+            int userIdxFindByJwt = jwtService.getUserIdx();
+            if (postProductReq.getSellerIdx() != userIdxFindByJwt){
+                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+            }
             PostProductRes postProductRes = productService.createProduct(postProductReq);
             return new BaseResponse<>(postProductRes);
         } catch (BaseException exception){
@@ -35,6 +43,10 @@ public class ProductController {
     @PatchMapping("/delete-product")
     public BaseResponse<PatchChangeStatusRes> deleteProduct(@RequestBody PatchChangeStatusReq patchChangeStatusReq){
         try{
+            int userIdxFindByJwt = jwtService.getUserIdx();
+            if (patchChangeStatusReq.getUserIdx() != userIdxFindByJwt){
+                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+            }
             PatchChangeStatusRes patchChangeStatusRes = productService.updateStatusN(patchChangeStatusReq);
             return new BaseResponse<>(patchChangeStatusRes);
         }catch(BaseException baseException){
@@ -76,6 +88,21 @@ public class ProductController {
             return new BaseResponse<>(getProductRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/by-userIdx/{userIdx}")
+    public BaseResponse<List<GetProductRes>> getProductsByUserIdx(@PathVariable("userIdx") int userIdx){
+        try{
+            int userIdxFindByJwt = jwtService.getUserIdx();
+            if (userIdx != userIdxFindByJwt){
+                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+            }
+            List<GetProductRes> getProductRes = productProvider.getProductsByUserIdx(userIdx);
+            return new BaseResponse<>(getProductRes);
+        }catch(BaseException baseException){
+            return new BaseResponse<>(baseException.getStatus());
         }
     }
 

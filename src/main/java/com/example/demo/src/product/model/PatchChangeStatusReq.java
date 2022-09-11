@@ -7,5 +7,6 @@ import lombok.*;
 @AllArgsConstructor // 해당 클래스의 모든 멤버 변수를 받는 생성자를 생성
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PatchChangeStatusReq {
+    private int userIdx;
     private int productIdx;
 }

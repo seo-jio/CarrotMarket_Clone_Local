@@ -84,18 +84,19 @@ public class ProductDao {
     }
 
     public int createProduct(PostProductReq postProductReq) {
-        String createProductQuery = "insert into Product(sellerIdx, location, title, content, price, canSuggestPrice) " +
-                                    "values (?, ?, ?, ?, ?, ?)";
+        String createProductQuery = "insert into Product(sellerIdx, location, title, content, price, canSuggestPrice, categoryIdx) " +
+                                    "values (?, ?, ?, ?, ?, ?, ?)";
         Object[] createProductParams = new Object[]{postProductReq.getSellerIdx(), postProductReq.getLocation(),
                                                     postProductReq.getTitle(), postProductReq.getContent(),
-                                                    postProductReq.getPrice(), postProductReq.getCanSuggestPrice()};
+                                                    postProductReq.getPrice(), postProductReq.getCanSuggestPrice(),
+                                                    postProductReq.getCategoryIdx()};
         jdbcTemplate.update(createProductQuery, createProductParams);
         String lastInsertIdQuery = "select last_insert_id()"; // 가장 마지막에 삽입된(생성된) id값은 가져옴, 노션 참고
         return jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
     public int updateStatusN(PatchChangeStatusReq patchChangeStatusReq) {
-        String updateStatusQuery = "update Product p set p.status = 'N' where p.productIdx = ?";
+        String updateStatusQuery = "update Product p set p.status = 'N' where p.productIdx = ?"; //status를 N으로 변경
         int updateStatusQueryParams = patchChangeStatusReq.getProductIdx();
         jdbcTemplate.update(updateStatusQuery, updateStatusQueryParams);
         //updatedAt 컬럼 값을 확인하여 가장 최근에 수정한 row의 id를 가져온다.
@@ -112,5 +113,21 @@ public class ProductDao {
         String lastUpdateIdQuery = "select productIdx from Product order by updatedAt desc limit 1";
         int result =  jdbcTemplate.queryForObject(lastUpdateIdQuery, int.class);
         return result;
+    }
+
+    public List<GetProductRes> getProductsByUserIdx(int userIdx) {
+        String getProductsByUserIdxQuery = "select * from Product p where p.sellerIdx = ?";
+        int getProductsBuUserIdxParams = userIdx;
+        return this.jdbcTemplate.query(getProductsByUserIdxQuery,
+                (rs, rowNum) -> new GetProductRes(
+                        rs.getInt("productIdx"),
+                        rs.getInt("sellerIdx"),
+                        rs.getInt("location"),
+                        rs.getInt("categoryIdx"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getInt("price"),
+                        rs.getString("canSuggestPrice")),
+                getProductsBuUserIdxParams);
     }
 }
