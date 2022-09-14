@@ -10,5 +10,5 @@ import lombok.*;
 public class PostDealReq {
     private int buyerIdx;
     private int productIdx;
-    private int dealPrice;
+    private Integer dealPrice;
 }

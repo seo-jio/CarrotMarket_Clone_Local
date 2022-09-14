@@ -13,5 +13,5 @@ public class PostProductReq {
     private String content;
     private int price;
     private String canSuggestPrice;
-    private int categoryIdx;
+    private Integer categoryIdx;
 }

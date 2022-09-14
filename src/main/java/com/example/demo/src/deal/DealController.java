@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import static com.example.demo.config.BaseResponseStatus.POST_PRODUCT_EMPTY_DEAL_PRICE;
+
 @RestController
 @RequestMapping("/app/deals")
 @RequiredArgsConstructor
@@ -25,6 +27,9 @@ public class DealController {
     public BaseResponse<PostDealRes> createDeal(@RequestBody PostDealReq postDealReq){
         try{
             int userIdxFindByJwt = jwtService.getUserIdx();
+            if (postDealReq.getDealPrice() == null){
+                return new BaseResponse<>(POST_PRODUCT_EMPTY_DEAL_PRICE);
+            }
             if (postDealReq.getBuyerIdx() != userIdxFindByJwt){
                 return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
             }

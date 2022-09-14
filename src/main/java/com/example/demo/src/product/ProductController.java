@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.example.demo.config.BaseResponseStatus.*;
+
 @RestController
 @RequestMapping("/app/products")
 @RequiredArgsConstructor  //final keyword가 붙은 변수들을 인자로 받는 생성자를 자동으로 만들어준다.
@@ -29,6 +31,18 @@ public class ProductController {
     public BaseResponse<PostProductRes> createProduct(@RequestBody PostProductReq postProductReq){
         try{
             int userIdxFindByJwt = jwtService.getUserIdx();
+            if (postProductReq.getTitle() == null){
+                return new BaseResponse<>(POST_PRODUCT_EMPTY_TITLE);
+            }
+            if (postProductReq.getContent() == null){
+                return new BaseResponse<>(POST_PRODUCT_EMPTY_CONTENT);
+            }
+            if (postProductReq.getCanSuggestPrice() == null){
+                return new BaseResponse<>(POST_PRODUCT_EMPTY_CAN_SUGGEST_PRICE);
+            }
+            if (postProductReq.getCategoryIdx() == null){
+                return new BaseResponse<>(POST_PRODUCT_EMPTY_CATEGORY);
+            }
             if (postProductReq.getSellerIdx() != userIdxFindByJwt){
                 return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
             }

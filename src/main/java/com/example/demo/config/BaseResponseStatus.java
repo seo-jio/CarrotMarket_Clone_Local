@@ -35,6 +35,16 @@ public enum BaseResponseStatus {
     POST_USERS_DELETED_USER(false, 2021, "탈퇴한 회원입니다."),
     POST_USERS_SLEEPER_ACCOUNT(false, 2022, "휴먼 계정입니다."),
 
+    //// [POST] / product
+    POST_PRODUCT_EMPTY_TITLE(false, 2023, "제목을 입력해주세요."),
+    POST_PRODUCT_EMPTY_CONTENT(false, 2024, "내용을 입력해주세요."),
+    POST_PRODUCT_EMPTY_CAN_SUGGEST_PRICE(false, 2025, "가격 제안 여부를 입력해주세요."),
+    POST_PRODUCT_EMPTY_CATEGORY(false, 2026, "카테고리를 선택해주세요."),
+
+    //// [POST] / deal
+    POST_PRODUCT_EMPTY_DEAL_PRICE(false, 2027, "거래 가격을 입력해주세요."),
+
+
 
     /**
      * 3000 : Response 오류

@@ -169,7 +169,10 @@ public class UserController {
         //  .(dot)이 포함된 경우, .을 포함한 그 뒤가 잘려서 들어감
         // Get Users
         try {
-            System.out.println("백에서 돌아가유~~~");
+            int userIdxFindByJwt = jwtService.getUserIdx();
+            if(userIdxFindByJwt != userIdx){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
             GetUserRes getUserRes = userProvider.getUser(userIdx);
             return new BaseResponse<>(getUserRes);
         } catch (BaseException exception) {
