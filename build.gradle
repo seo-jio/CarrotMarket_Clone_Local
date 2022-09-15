@@ -57,7 +57,8 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter')
     compile('org.springframework.boot:spring-boot-starter-web')
 
-
+    //Json Parsing을 위한 Gson 라이브러리
+    dependencies { implementation 'com.google.code.gson:gson:2.8.7' }
 
 
 
